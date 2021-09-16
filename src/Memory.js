@@ -1,11 +1,12 @@
+import {HEX} from '../src/util/util.js'
 class MemoryLocation{
     constructor(loc, data){
-        this.location_hex = loc.toString(16);
+        this.location = loc;
         this.data = data;
         this.written = false;
     }
     reset(){
-        this.data = 0;
+        this.data = 0x00;
         this.written = false;
     }
     set(data){
@@ -33,38 +34,34 @@ export class Memory{
     refresh(){
         this.memory_locations = [];
         for(let i=0; i<this.memory_size; i++){
-            this.memory_locations.push(new MemoryLocation(i, 0));
+            this.memory_locations.push(new MemoryLocation(i, 0x00));
         }
     }
-    write(loc_hex, data){
-        let loc = parseInt(loc_hex, 16);
+    write(loc, data){
         if(this.__isInRange(loc)){
             this.memory_locations[loc].set(data);
             return true;
         }
         else{
-            console.error(`Unauthorized Memory Access At Location ${loc_hex}`);
+            console.error(`Unauthorized Memory Access At Location ${HEX(loc)}`);
             return false;
         }
     }
-    isWritten(loc_hex){
-        let loc = parseInt(loc_hex, 16);
+    isWritten(loc){
         return this.memory_locations[loc].written;
     }
     
-    read(loc_hex){
+    read(loc){
         // console.log(loc_hex);
-        let loc = parseInt(loc_hex, 16);
         if(this.__isInRange(loc)){
             return this.memory_locations[loc].get();
         }
         else{
-            console.error(`Unauthorized Memory Access At Location ${loc_hex}`);
+            console.error(`Unauthorized Memory Access At Location ${HEX(loc)}`);
             return null;
         }
     }
-    resetLocation(loc_hex){
-        let loc = parseInt(loc_hex, 16);
+    resetLocation(loc){
         this.memory_locations[loc].reset();
     }
 
